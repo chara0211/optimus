@@ -4,14 +4,11 @@
 html,
 body {
   height: 100%;
-  margin: 0;
-  background: #050812; /* <- important: set on html too */
-  color: #fff;
 }
 
-/* If you want to force dark UI controls (scrollbars/forms) */
-:root {
-  color-scheme: dark;
+body {
+  background: #050812;
+  color: #fff;
 }
 
 /* ===== helpers WITHOUT @apply (Tailwind v4 safe) ===== */
