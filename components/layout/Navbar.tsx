@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Sun } from "lucide-react";
+import { ChevronDown, Sun, Moon } from "lucide-react";
 
 const nav = [
   { label: "Services", href: "/services", hasDropdown: true },
@@ -50,9 +50,33 @@ const serviceMega = [
   },
 ];
 
+type ThemeMode = "dark" | "light";
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  // theme
+  const [theme, setTheme] = useState<ThemeMode>("dark");
+
+  // init theme from localStorage (or system)
+  useEffect(() => {
+    const saved = (localStorage.getItem("theme") as ThemeMode | null);
+    const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)")?.matches;
+
+    const initial: ThemeMode = saved ?? (prefersLight ? "light" : "dark");
+    setTheme(initial);
+    document.documentElement.setAttribute("data-theme", initial);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next: ThemeMode = prev === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      return next;
+    });
+  };
 
   // close on click outside + ESC
   useEffect(() => {
@@ -79,7 +103,7 @@ export default function Navbar() {
             <span className="grid h-10 w-10 place-items-center rounded-xl grad text-white font-semibold">
               O
             </span>
-            <span className="font-semibold text-white/90">Optimus Consulting</span>
+            <span className="font-semibold text-fg">Optimus Consulting</span>
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex">
@@ -93,7 +117,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex items-center gap-1 text-sm text-white/70 hover:text-white transition"
+                className="flex items-center gap-1 text-sm text-muted hover:text-fg transition"
                 aria-haspopup="true"
                 aria-expanded={open}
               >
@@ -112,11 +136,15 @@ export default function Navbar() {
               >
                 <div
                   className={[
-                    "rounded-2xl border border-white/10",
-                    "bg-[#070B14]/95 backdrop-blur-xl",
-                    "shadow-2xl shadow-black/40",
+                    "rounded-2xl border",
                     "p-6",
+                    "shadow-2xl shadow-black/30",
                   ].join(" ")}
+                  style={{
+                    borderColor: "var(--border)",
+                    background: "var(--menuBg)",
+                    backdropFilter: "blur(20px)",
+                  }}
                 >
                   <div className="grid grid-cols-4 gap-10">
                     {serviceMega.map((col) => (
@@ -133,10 +161,10 @@ export default function Navbar() {
                               onClick={() => setOpen(false)}
                               className="group block"
                             >
-                              <div className="text-[15px] font-semibold text-white/90 group-hover:text-white transition">
+                              <div className="text-[15px] font-semibold text-fg group-hover:opacity-100 transition">
                                 {it.title}
                               </div>
-                              <div className="mt-1 text-xs text-white/45 group-hover:text-white/55 transition">
+                              <div className="mt-1 text-xs text-muted-2 group-hover:opacity-100 transition">
                                 {it.desc}
                               </div>
                             </Link>
@@ -146,7 +174,6 @@ export default function Navbar() {
                     ))}
                   </div>
 
-                  {/* bottom subtle gradient strip like screenshot vibe */}
                   <div className="mt-6 h-[2px] w-full rounded-full bg-gradient-to-r from-blue-500/70 via-fuchsia-500/70 to-violet-500/70" />
                 </div>
               </div>
@@ -159,7 +186,7 @@ export default function Navbar() {
                 <Link
                   key={i.href}
                   href={i.href}
-                  className="flex items-center gap-1 text-sm text-white/70 hover:text-white transition"
+                  className="flex items-center gap-1 text-sm text-muted hover:text-fg transition"
                 >
                   {i.label}
                 </Link>
@@ -169,10 +196,16 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               aria-label="Theme"
-              className="hidden md:grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.05] text-white/80 hover:bg-white/[0.09] transition"
+              onClick={toggleTheme}
+              className="hidden md:grid h-10 w-10 place-items-center rounded-xl border bg-transparent transition"
+              style={{ borderColor: "var(--border)" }}
               type="button"
             >
-              <Sun className="h-5 w-5" />
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" style={{ color: "var(--muted)" }} />
+              ) : (
+                <Moon className="h-5 w-5" style={{ color: "var(--muted)" }} />
+              )}
             </button>
 
             <Link

@@ -6,7 +6,7 @@ export default function CTA() {
     <section className="mx-auto max-w-6xl px-4 pt-20">
       <div className="soft-shadow rounded-2xl grad px-6 py-16 text-center">
         <h3 className="text-4xl font-extrabold text-white">Ready to Transform Your Business?</h3>
-        <p className="mx-auto mt-4 max-w-2xl text-white/85">
+        <p className="mx-auto mt-4 max-w-2xl text-white/90">
           Let&apos;s discuss your project and create something extraordinary together
         </p>
 

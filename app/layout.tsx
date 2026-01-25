@@ -7,10 +7,26 @@ export const metadata = {
   description: "A top-tier global consulting, SaaS, and AI engineering partner.",
 };
 
+const themeInitScript = `
+(function() {
+  try {
+    const saved = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = saved || (prefersDark ? "dark" : "light");
+    document.documentElement.classList.remove("dark","light");
+    document.documentElement.classList.add(theme);
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#050812] text-white">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+
+      <body className="min-h-screen">
         {/* Background glow */}
         <div className="pointer-events-none fixed inset-0 -z-10 page-glow" />
 

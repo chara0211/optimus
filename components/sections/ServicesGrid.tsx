@@ -14,8 +14,8 @@ export default function ServicesGrid() {
   return (
     <section className="mx-auto max-w-6xl px-4 pt-20">
       <div className="text-center">
-        <h2 className="text-4xl font-extrabold text-white">Our Services</h2>
-        <p className="mt-3 text-white/65">
+        <h2 className="text-4xl font-extrabold text-fg">Our Services</h2>
+        <p className="mt-3 text-muted">
           Comprehensive digital solutions tailored to your enterprise needs
         </p>
       </div>
@@ -27,12 +27,12 @@ export default function ServicesGrid() {
               <s.Icon className="h-6 w-6" />
             </div>
 
-            <h3 className="mt-5 text-xl font-bold text-white">{s.title}</h3>
-            <p className="mt-2 text-sm text-white/60">{s.desc}</p>
+            <h3 className="mt-5 text-xl font-bold text-fg">{s.title}</h3>
+            <p className="mt-2 text-sm text-muted">{s.desc}</p>
 
             <Link
               href="/services"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition"
             >
               Learn more <ArrowRight className="h-4 w-4" />
             </Link>

@@ -1,5 +1,55 @@
 @import "tailwindcss";
 
+/* ---------------------------------------
+   THEME TOKENS (dark + light)
+---------------------------------------- */
+
+:root {
+  /* default = dark */
+  --bg: #050812;
+  --fg: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted2: rgba(255, 255, 255, 0.45);
+
+  --glass: rgba(255, 255, 255, 0.04);
+  --card: rgba(255, 255, 255, 0.035);
+  --border: rgba(255, 255, 255, 0.10);
+
+  --shadow1: rgba(0, 0, 0, 0.55);
+  --shadow2: rgba(0, 0, 0, 0.35);
+
+  --menuBg: rgba(7, 11, 20, 0.95);
+
+  --grad: linear-gradient(90deg, #3b82f6, #8b5cf6, #d946ef);
+
+  --glow:
+    radial-gradient(900px 500px at 50% -120px, rgba(59,130,246,0.25), transparent 60%),
+    radial-gradient(900px 500px at 80% 30%, rgba(168,85,247,0.18), transparent 60%),
+    radial-gradient(900px 500px at 20% 45%, rgba(236,72,153,0.10), transparent 60%);
+}
+
+/* Light mode override */
+html[data-theme="light"] {
+  --bg: #f7f9ff;
+  --fg: rgba(10, 14, 28, 0.92);
+  --muted: rgba(10, 14, 28, 0.70);
+  --muted2: rgba(10, 14, 28, 0.50);
+
+  --glass: rgba(10, 14, 28, 0.04);
+  --card: rgba(10, 14, 28, 0.035);
+  --border: rgba(10, 14, 28, 0.12);
+
+  --shadow1: rgba(0, 0, 0, 0.15);
+  --shadow2: rgba(0, 0, 0, 0.08);
+
+  --menuBg: rgba(255, 255, 255, 0.92);
+
+  --glow:
+    radial-gradient(900px 500px at 50% -120px, rgba(59,130,246,0.18), transparent 60%),
+    radial-gradient(900px 500px at 80% 30%, rgba(168,85,247,0.12), transparent 60%),
+    radial-gradient(900px 500px at 20% 45%, rgba(236,72,153,0.08), transparent 60%);
+}
+
 /* Base */
 html,
 body {
@@ -7,44 +57,58 @@ body {
 }
 
 body {
-  background: #050812;
-  color: #fff;
+  background: var(--bg);
+  color: var(--fg);
 }
 
-/* ===== helpers WITHOUT @apply (Tailwind v4 safe) ===== */
+/* ---------------------------------------
+   HELPERS (Tailwind v4 safe: no @apply)
+---------------------------------------- */
 
 .glass {
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  background: var(--glass);
   backdrop-filter: blur(20px);
 }
 
 .card {
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+  background: var(--card);
   backdrop-filter: blur(20px);
 }
 
 .soft-shadow {
   box-shadow:
-    0 35px 90px rgba(0, 0, 0, 0.55),
-    0 12px 28px rgba(0, 0, 0, 0.35);
+    0 35px 90px var(--shadow1),
+    0 12px 28px var(--shadow2);
 }
 
 .grad {
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #d946ef);
+  background: var(--grad);
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #d946ef);
+  background: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .page-glow {
-  background:
-    radial-gradient(900px 500px at 50% -120px, rgba(59,130,246,0.25), transparent 60%),
-    radial-gradient(900px 500px at 80% 30%, rgba(168,85,247,0.18), transparent 60%),
-    radial-gradient(900px 500px at 20% 45%, rgba(236,72,153,0.10), transparent 60%);
+  background: var(--glow);
+}
+
+/* ---------------------------------------
+   THEME-AWARE TEXT HELPERS
+---------------------------------------- */
+.text-fg {
+  color: var(--fg);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.text-muted-2 {
+  color: var(--muted2);
 }

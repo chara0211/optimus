@@ -14,7 +14,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-type StepId = "basic" | "type" | "desc" | "budget" | "timeline" | "extra" | "success";
+type StepId =
+  | "basic"
+  | "type"
+  | "desc"
+  | "budget"
+  | "timeline"
+  | "extra"
+  | "success";
 
 type FormState = {
   fullName: string;
@@ -47,7 +54,8 @@ type FormState = {
   additional: string;
 };
 
-const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
+const clamp = (n: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, n));
 
 export default function BookConsultationWizard() {
   const steps = useMemo(
@@ -58,7 +66,6 @@ export default function BookConsultationWizard() {
       { id: "budget" as const, label: "Budget", Icon: DollarSign },
       { id: "timeline" as const, label: "Timeline", Icon: Calendar },
       { id: "extra" as const, label: "Additional Details", Icon: MessageSquare },
-      // final screen
       { id: "success" as const, label: "Completed", Icon: MessageSquare },
     ],
     []
@@ -81,8 +88,10 @@ export default function BookConsultationWizard() {
   const step = steps[current];
   const isSuccess = step.id === "success";
 
-  // Progress based on the 6 visible steps (basic..extra), full on success
-  const formStepsCount = 6;
+  // progress based on 6 visible steps (basic..extra)
+  const visibleSteps = steps.slice(0, 6);
+  const formStepsCount = visibleSteps.length;
+
   const progressPct = isSuccess
     ? 100
     : (Math.min(current, formStepsCount - 1) / (formStepsCount - 1)) * 100;
@@ -96,78 +105,73 @@ export default function BookConsultationWizard() {
     <div className="mx-auto max-w-6xl px-4 pt-10 pb-24">
       {/* Title */}
       <div className="text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-violet-400">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-violet-500">
           Book a Consultation
         </h1>
-        <p className="mt-3 text-white/70">
+        <p className="mt-3 text-muted">
           Let&apos;s discuss your project and find the perfect solution
         </p>
       </div>
 
-{/* Stepper (line stays between circles like design) */}
-<div className="mx-auto mt-10 max-w-5xl">
-  <div className="relative">
-    {/* We use padding so the line starts/ends at first/last circle center */}
-    <div className="px-6 md:px-8">
-      <div className="relative">
-        {/* Base line (only between circles) */}
-        <div className="absolute left-0 right-0 top-[24px] h-[3px] rounded-full bg-white/10" />
+      {/* Stepper */}
+      <div className="mx-auto mt-10 max-w-5xl">
+        <div className="relative">
+          {/* the line container must match circle centers */}
+          <div className="px-6 md:px-8">
+            <div className="relative">
+              <div className="absolute left-0 right-0 top-[24px] h-[3px] rounded-full bg-border" />
+              <div
+                className="absolute left-0 top-[24px] h-[3px] rounded-full bg-emerald-500 transition-all"
+                style={{ width: `${progressPct}%` }}
+              />
 
-        {/* Progress line (only between circles) */}
-        <div
-          className="absolute left-0 top-[24px] h-[3px] rounded-full bg-emerald-500 transition-all"
-          style={{ width: `${progressPct}%` }}
-        />
+              <div className="grid grid-cols-6">
+                {visibleSteps.map((s, idx) => {
+                  const done = isSuccess ? true : idx < current;
+                  const active = !isSuccess && idx === current;
 
-        {/* Steps */}
-        <div className="grid grid-cols-6">
-          {steps.slice(0, 6).map((s, idx) => {
-            const done = isSuccess ? true : idx < current;
-            const active = !isSuccess && idx === current;
+                  return (
+                    <div key={s.id} className="flex flex-col items-center">
+                      <div
+                        className={[
+                          "relative z-10 grid h-12 w-12 place-items-center rounded-full border transition",
+                          done
+                            ? "bg-emerald-500 border-emerald-400"
+                            : active
+                            ? "bg-violet-500 border-violet-400"
+                            : "bg-glass border-border",
+                        ].join(" ")}
+                      >
+                        {done ? (
+                          <Check className="h-5 w-5 text-white" />
+                        ) : (
+                          <s.Icon className="h-5 w-5 text-fg" />
+                        )}
+                      </div>
 
-            return (
-              <div key={s.id} className="flex flex-col items-center">
-                <div
-                  className={[
-                    "relative z-10 grid h-12 w-12 place-items-center rounded-full border transition",
-                    done
-                      ? "bg-emerald-500 border-emerald-400"
-                      : active
-                      ? "bg-violet-500 border-violet-400"
-                      : "bg-white/[0.04] border-white/10",
-                  ].join(" ")}
-                >
-                  {done ? (
-                    <Check className="h-5 w-5 text-white" />
-                  ) : (
-                    <s.Icon className="h-5 w-5 text-white/85" />
-                  )}
-                </div>
-
-                <div
-                  className={[
-                    "mt-2 text-xs font-medium",
-                    done || active ? "text-white/85" : "text-white/35",
-                  ].join(" ")}
-                >
-                  {s.label}
-                </div>
+                      <div
+                        className={[
+                          "mt-2 text-xs font-medium",
+                          done || active ? "text-fg/90" : "text-muted-2",
+                        ].join(" ")}
+                      >
+                        {s.label}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
 
       {/* Main Card */}
       <div className="mx-auto mt-10 max-w-4xl">
         <div className="card soft-shadow rounded-2xl p-8 md:p-10">
           {!isSuccess ? (
             <>
-              <h2 className="text-3xl font-extrabold text-white">
+              <h2 className="text-3xl font-extrabold text-fg">
                 {stepTitle(step.id)}
               </h2>
 
@@ -189,7 +193,9 @@ export default function BookConsultationWizard() {
                 {step.id === "desc" && (
                   <Description
                     value={data.description}
-                    onChange={(v) => setData((d) => ({ ...d, description: v }))}
+                    onChange={(v) =>
+                      setData((d) => ({ ...d, description: v }))
+                    }
                   />
                 )}
 
@@ -210,15 +216,15 @@ export default function BookConsultationWizard() {
                 {step.id === "extra" && (
                   <Additional
                     value={data.additional}
-                    onChange={(v) => setData((d) => ({ ...d, additional: v }))}
+                    onChange={(v) =>
+                      setData((d) => ({ ...d, additional: v }))
+                    }
                   />
                 )}
               </div>
 
-              {/* Divider */}
-              <div className="mt-10 h-px w-full bg-white/10" />
+              <div className="mt-10 h-px w-full bg-border" />
 
-              {/* Actions */}
               <div className="mt-8 flex items-center justify-between">
                 <button
                   onClick={goPrev}
@@ -226,8 +232,8 @@ export default function BookConsultationWizard() {
                   className={[
                     "inline-flex items-center gap-2 rounded-xl px-5 py-3 font-semibold transition",
                     current === 0
-                      ? "bg-white/5 text-white/30 cursor-not-allowed"
-                      : "bg-white/10 text-white/80 hover:bg-white/15",
+                      ? "bg-glass text-muted-2 cursor-not-allowed"
+                      : "bg-glass text-fg/90 hover:opacity-95",
                   ].join(" ")}
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -237,7 +243,6 @@ export default function BookConsultationWizard() {
                 <button
                   onClick={() => {
                     if (!isLastFormStep) return goNext();
-                    // submit then success
                     console.log("SUBMIT", data);
                     goNext();
                   }}
@@ -257,7 +262,6 @@ export default function BookConsultationWizard() {
   );
 }
 
-/* ---------- Step Titles ---------- */
 function stepTitle(id: StepId) {
   switch (id) {
     case "basic":
@@ -277,7 +281,8 @@ function stepTitle(id: StepId) {
   }
 }
 
-/* ---------- Shared Input Style ---------- */
+/* ---------- Shared Inputs ---------- */
+
 function Field({
   label,
   required,
@@ -289,8 +294,8 @@ function Field({
 }) {
   return (
     <div className="space-y-2">
-      <div className="text-sm font-semibold text-white/85">
-        {label} {required ? <span className="text-white/60">*</span> : null}
+      <div className="text-sm font-semibold text-fg/90">
+        {label} {required ? <span className="text-muted">*</span> : null}
       </div>
       {children}
     </div>
@@ -302,8 +307,8 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...props}
       className={[
-        "w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white/90",
-        "placeholder:text-white/30 outline-none",
+        "w-full rounded-xl border border-border bg-glass px-4 py-3 text-fg",
+        "placeholder:text-muted-2 outline-none",
         "focus:border-violet-400/60 focus:ring-2 focus:ring-violet-500/20 transition",
       ].join(" ")}
     />
@@ -315,15 +320,15 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
     <textarea
       {...props}
       className={[
-        "w-full min-h-[220px] rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white/90",
-        "placeholder:text-white/30 outline-none",
+        "w-full min-h-[220px] rounded-xl border border-border bg-glass px-4 py-3 text-fg",
+        "placeholder:text-muted-2 outline-none",
         "focus:border-violet-400/60 focus:ring-2 focus:ring-violet-500/20 transition",
       ].join(" ")}
     />
   );
 }
 
-/* ---------- Step UIs ---------- */
+/* ---------- Steps ---------- */
 
 function BasicInfo({
   value,
@@ -397,7 +402,7 @@ function ProjectType({
               "rounded-xl border px-6 py-4 text-center font-semibold transition",
               selected
                 ? "border-transparent grad text-white shadow-lg shadow-fuchsia-500/10"
-                : "border-white/10 bg-white/[0.04] text-white/80 hover:bg-white/[0.07]",
+                : "border-border bg-glass text-fg/90 hover:opacity-95",
             ].join(" ")}
             type="button"
           >
@@ -409,17 +414,11 @@ function ProjectType({
   );
 }
 
-function Description({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
+function Description({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="grid gap-3">
-      <div className="text-sm font-semibold text-white/85">
-        Tell us about your project <span className="text-white/60">*</span>
+      <div className="text-sm font-semibold text-fg/90">
+        Tell us about your project <span className="text-muted">*</span>
       </div>
       <Textarea
         placeholder="Describe your project goals, requirements, and any specific features you have in mind..."
@@ -430,13 +429,7 @@ function Description({
   );
 }
 
-function Budget({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-}) {
+function Budget({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const min = 5000;
   const max = 1_000_000;
 
@@ -451,8 +444,8 @@ function Budget({
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between">
-        <div className="text-sm font-semibold text-white/85">Budget Range</div>
-        <div className="text-2xl font-extrabold text-violet-400">{pretty}</div>
+        <div className="text-sm font-semibold text-fg/90">Budget Range</div>
+        <div className="text-2xl font-extrabold text-violet-500">{pretty}</div>
       </div>
 
       <div className="space-y-2">
@@ -464,13 +457,13 @@ function Budget({
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full accent-violet-500"
         />
-        <div className="flex justify-between text-xs text-white/45">
+        <div className="flex justify-between text-xs text-muted-2">
           <span>€5k</span>
           <span>€1M</span>
         </div>
       </div>
 
-      <div className="text-sm font-semibold text-white/75">Quick Select:</div>
+      <div className="text-sm font-semibold text-fg/80">Quick Select:</div>
 
       <div className="grid gap-3 sm:grid-cols-4">
         {quick.map((q) => {
@@ -484,7 +477,7 @@ function Budget({
                 "rounded-xl px-4 py-3 text-sm font-semibold transition",
                 selected
                   ? "grad text-white shadow-lg shadow-fuchsia-500/10"
-                  : "bg-white/[0.08] text-white/75 hover:bg-white/[0.11]",
+                  : "bg-glass text-fg/85 hover:opacity-95 border border-border",
               ].join(" ")}
             >
               {new Intl.NumberFormat("en-US", {
@@ -528,7 +521,7 @@ function Timeline({
               "rounded-xl border px-6 py-4 text-center font-semibold transition",
               selected
                 ? "border-transparent grad text-white shadow-lg shadow-fuchsia-500/10"
-                : "border-white/10 bg-white/[0.04] text-white/80 hover:bg-white/[0.07]",
+                : "border-border bg-glass text-fg/90 hover:opacity-95",
             ].join(" ")}
             type="button"
           >
@@ -540,18 +533,10 @@ function Timeline({
   );
 }
 
-function Additional({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
+function Additional({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="grid gap-3">
-      <div className="text-sm font-semibold text-white/85">
-        Anything else we should know?
-      </div>
+      <div className="text-sm font-semibold text-fg/90">Anything else we should know?</div>
       <Textarea
         placeholder="Share any extra context, constraints, or links (optional)..."
         value={value}
@@ -568,9 +553,9 @@ function SuccessScreen() {
         <Check className="h-10 w-10 text-white" />
       </div>
 
-      <h2 className="text-4xl font-extrabold text-white">Thank You!</h2>
+      <h2 className="text-4xl font-extrabold text-fg">Thank You!</h2>
 
-      <p className="mt-3 max-w-md text-white/70">
+      <p className="mt-3 max-w-md text-muted">
         We&apos;ve received your consultation request and will get back to you within 24 hours.
       </p>
 
