@@ -28,7 +28,6 @@
     radial-gradient(900px 500px at 20% 45%, rgba(236,72,153,0.10), transparent 60%);
 }
 
-/* Light mode override */
 html[data-theme="light"] {
   --bg: #f7f9ff;
   --fg: rgba(10, 14, 28, 0.92);
@@ -51,41 +50,22 @@ html[data-theme="light"] {
 }
 
 /* Base */
-html,
-body {
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body {
   background: var(--bg);
   color: var(--fg);
 }
 
-/* ---------------------------------------
-   HELPERS (Tailwind v4 safe: no @apply)
----------------------------------------- */
-
-.glass {
-  border: 1px solid var(--border);
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-}
-
-.card {
-  border: 1px solid var(--border);
-  background: var(--card);
-  backdrop-filter: blur(20px);
-}
+/* Helpers */
+.glass { border: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(20px); }
+.card  { border: 1px solid var(--border); background: var(--card); backdrop-filter: blur(20px); }
 
 .soft-shadow {
-  box-shadow:
-    0 35px 90px var(--shadow1),
-    0 12px 28px var(--shadow2);
+  box-shadow: 0 35px 90px var(--shadow1), 0 12px 28px var(--shadow2);
 }
 
-.grad {
-  background: var(--grad);
-}
+.grad { background: var(--grad); }
 
 .gradient-text {
   background: var(--grad);
@@ -94,21 +74,9 @@ body {
   color: transparent;
 }
 
-.page-glow {
-  background: var(--glow);
-}
+.page-glow { background: var(--glow); }
 
-/* ---------------------------------------
-   THEME-AWARE TEXT HELPERS
----------------------------------------- */
-.text-fg {
-  color: var(--fg);
-}
-
-.text-muted {
-  color: var(--muted);
-}
-
-.text-muted-2 {
-  color: var(--muted2);
-}
+/* THEME-AWARE TEXT HELPERS (strongest) */
+.text-fg { color: var(--fg) !important; }
+.text-muted { color: var(--muted) !important; }
+.text-muted-2 { color: var(--muted2) !important; }

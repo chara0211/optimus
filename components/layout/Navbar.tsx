@@ -56,12 +56,11 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
-  // theme
   const [theme, setTheme] = useState<ThemeMode>("dark");
 
   // init theme from localStorage (or system)
   useEffect(() => {
-    const saved = (localStorage.getItem("theme") as ThemeMode | null);
+    const saved = localStorage.getItem("theme") as ThemeMode | null;
     const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)")?.matches;
 
     const initial: ThemeMode = saved ?? (prefersLight ? "light" : "dark");
@@ -130,26 +129,25 @@ export default function Navbar() {
                 className={[
                   "absolute left-1/2 top-[54px] -translate-x-1/2",
                   "w-[920px] max-w-[calc(100vw-2rem)]",
-                  open ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1",
+                  open
+                    ? "pointer-events-auto opacity-100 translate-y-0"
+                    : "pointer-events-none opacity-0 -translate-y-1",
                   "transition duration-150",
                 ].join(" ")}
               >
                 <div
-                  className={[
-                    "rounded-2xl border",
-                    "p-6",
-                    "shadow-2xl shadow-black/30",
-                  ].join(" ")}
+                  className="rounded-2xl border p-6 shadow-2xl"
                   style={{
                     borderColor: "var(--border)",
                     background: "var(--menuBg)",
                     backdropFilter: "blur(20px)",
+                    boxShadow: "0 30px 90px rgba(0,0,0,0.35)",
                   }}
                 >
                   <div className="grid grid-cols-4 gap-10">
                     {serviceMega.map((col) => (
                       <div key={col.heading}>
-                        <div className="text-sm font-semibold text-violet-400">
+                        <div className="text-sm font-semibold text-violet-500">
                           {col.heading}
                         </div>
 
